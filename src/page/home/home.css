@@ -1,0 +1,12 @@
+.post-container {
+    position: absolute;
+    margin: 1%;
+    width: 58%;
+}
+
+.new-post-form-container {
+    position: fixed;
+    right: 0;
+    width: 39%;
+    margin: 1%;
+}
