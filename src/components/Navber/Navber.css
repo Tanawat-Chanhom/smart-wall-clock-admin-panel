@@ -2,3 +2,28 @@
     position: relative;
     right: 0;
 }
+
+.container-img-logo img {
+    position: relative;
+    width: 70%;
+    margin: 0 auto;
+}
+
+.container-time {
+    position: relative;
+    text-align: center;
+    background-color: white;
+    width: 20%;
+    height: 100%;
+    border-radius: 100em;
+}
+
+@media screen and (max-width: 600px) {
+    .container-img-logo img {
+        width: 65%;
+    }
+
+    .container-time {
+        display: none;
+    }
+}

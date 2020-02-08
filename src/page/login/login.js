@@ -6,9 +6,11 @@ import Typography from '@material-ui/core/Typography'
 import { Grid } from '@material-ui/core';
 import {Redirect} from 'react-router-dom'
 
-import Navbar from '../../components/Navber/Navbar.js';
+// import Navbar from '../../components/Navber/Navbar.js';
 
 import './login.css';
+
+import logo from '../../static/image/time.png'
 
 class login extends Component {
 
@@ -27,7 +29,7 @@ class login extends Component {
             username: this.state.username,
             password: this.state.password
         }
-        await axios.post("/auth/login", data)
+        await axios.post("http://192.168.1.35:8080/auth/login", data)
             .then( res => {
                 if (res.data.token) {
                     sessionStorage.setItem("token", res.data.token);
@@ -56,23 +58,28 @@ class login extends Component {
         }
 
         return (
-            <div>
-                <Navbar/>
-                <div className={"form-container"}> 
+            <div className={"container-login"}>
+                <div className={"container-logo"}>
+                    <img src={logo} alt=""/>
+                </div>
+                <div className={"container-title"}>
+                    <h4>Smart Wall Clock - Admin Panel</h4>
+                </div>
+                <div className={"form-container"}>
                     <form noValidate>
-                        <Grid container direction="column" justify="flex-start" alignItems="center">
-                            <TextField id="outlined-basic" label="Username" type="text" name="username" variant="outlined" fullWidth onChange={this.handleChange}/><br/>
-                            <TextField id="outlined-basic" label="Password" type="password" name="password" variant="outlined" fullWidth onChange={this.handleChange}/><br/>
-                            <Grid container >
-                                <Grid item sm={6} xs={12} style={{padding: 8}}>
-                                    <Button variant="outlined" color="primary" className={"buttom-sign"} onClick={this.handleSubmit}>Signin</Button>
-                                </Grid>
-                                <Grid item sm={6} xs={12} style={{padding: 8}} >
-                                    <Button variant="outlined" color="primary" className={"buttom-sign"} >Signup</Button>
-                                </Grid>
-                            </Grid>
+                        <Grid container direction="column" justify="space-around" alignItems="center">
+                            <div className={"form-login"}>
+                                <TextField id="outlined-basic" label="Username" type="text" name="username" variant="outlined" fullWidth onChange={this.handleChange}/><br/>
+                                <TextField id="outlined-basic" label="Password" type="password" name="password" variant="outlined" fullWidth onChange={this.handleChange}/><br/>
+                            </div>
+                            {/*<Grid container >*/}
+                            {/*    <Grid item sm={12} xs={12} style={{padding: 8}}>*/}
+                            {/*        */}
+                            {/*    </Grid>*/}
+                            {/*</Grid>*/}
                         </Grid>
                     </form>
+                    <Button variant="outlined" color="primary" className={"bottom-sign"} onClick={this.handleSubmit}>Sign in</Button>
                     <Typography variant="overline" style={{color: "red"}}>{this.state.error}</Typography>
                 </div>
             </div>

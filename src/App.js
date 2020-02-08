@@ -10,7 +10,6 @@ import Login from './page/login/login.js'
 import Profile from './page/profile/profile.js'
 
 //Components
-// import Navbar from './components/Navbar.js';
 
 const theme = createMuiTheme({
   palette: {
@@ -32,13 +31,13 @@ class App extends Component {
       <MuiThemeProvider theme={theme}>
         <div className="App">
           <Router>
-              <div className="container">
+              {/*<div className="container">*/}
                 <Switch>
                   <Route exact path="/home" component={Home}></Route>
                   <Route exact path="/" component={Login}></Route>
                   <Route exact path="/profile" component={Profile}></Route>
                 </Switch>
-              </div>
+              {/*</div>*/}
           </Router>
         </div>
       </MuiThemeProvider>

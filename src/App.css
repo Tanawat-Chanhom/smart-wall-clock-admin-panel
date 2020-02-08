@@ -1,7 +1,4 @@
-/* .App {
-  text-align: center;
-}
-
+/*
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -38,7 +35,17 @@
 } */
 
 
+.App {
+  background-image: url(static/image/bg2.png);
+  background-repeat: repeat;
+  background-attachment: fixed;
+  position: absolute;
+  width: 100%;
+  min-height: 100%;
+}
+
 .container {
-  margin: 80px auto 0 auto;
-  /* max-width: 1200px; */
+  position: sticky;
+  width: 100vw;
+  height: 100vh;
 }

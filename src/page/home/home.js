@@ -18,9 +18,9 @@ class home extends Component {
 
     componentDidMount() {
         let config = {
-            headers: {token: sessionStorage.getItem('token')}
+            headers: {authorization: sessionStorage.getItem('token')}
         }
-        axios.get('/get', config)
+        axios.get('http://192.168.1.35:8080/get', config)
             .then(res => {
                 console.log(res.data);
                 this.setState({
@@ -40,27 +40,22 @@ class home extends Component {
         let dataMarkup = this.state.data ? (
             this.state.data.map((data) => <Card data={data}/>)
         ) : (
-            // <p>Loading.....</p>
-            <center>
+            <div className={"container-progress"}>
                 <CircularProgress/>
-            </center>
+            </div>
         );
         return (
-            <div>
+            <div className={"container-home"}>
                 <Navbar/>
-                    {/* <div className={"post-container"}>
-                        {dataMarkup}
-                    </div>
-                    <div className={"new-post-form-container"}>
-                        <NewPost/>
-                    </div> */}
                     <Grid container spacing={16}>
-                        <Grid item sm={9} xs={12} style={{padding: 8}}>
-                            {dataMarkup}
-                        </Grid>
-                        <Grid item sm={3} xs={12} style={{padding: 8}} >
-                            <div>
-                                <NewPost style={{position: "static"}}/>
+                        {/*<Grid item sm={3} xs={12} style={{padding: 8}}>*/}
+                        {/*    <div>*/}
+                        {/*        <NewPost style={{position: "static"}}/>*/}
+                        {/*    </div>*/}
+                        {/*</Grid>*/}
+                        <Grid item sm={12} xs={12} style={{padding: 8}} >
+                            <div className={"dataMarkup"}>
+                                {dataMarkup}
                             </div>
                         </Grid>
                     </Grid>

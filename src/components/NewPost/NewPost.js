@@ -28,9 +28,9 @@ class NewPost extends Component {
         }
 
         let config = {
-            headers: {token: sessionStorage.getItem('token')}
+            headers: {authorization: sessionStorage.getItem('token')}
         }
-        axios.post("/post", data, config)
+        axios.post("http://localhost:8080/post", data, config)
             .then( res => {
                 this.setState({
                     error: "Save Pass!!"
