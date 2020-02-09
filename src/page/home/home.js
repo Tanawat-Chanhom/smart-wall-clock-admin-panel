@@ -5,22 +5,28 @@ import {Redirect} from 'react-router-dom'
 
 //Components
 import Card from '../../components/Card/Card.js'
-import NewPost from '../../components/NewPost/NewPost.js'
+// import NewPost from '../../components/NewPost/NewPost.js'
 import Navbar from '../../components/Navber/Navbar.js';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import "./home.css";
+import DeleteIcon from "@material-ui/icons/Delete";
+import IconButton from "@material-ui/core/IconButton";
 
 class home extends Component {
-    state = {
-        data: null
+
+    constructor() {
+        super();
+        this.state = {
+            data: null
+        }
     }
 
     componentDidMount() {
         let config = {
             headers: {authorization: sessionStorage.getItem('token')}
         }
-        axios.get('http://192.168.1.35:8080/get', config)
+        axios.get('http://192.168.1.34:8080/get', config)
             .then(res => {
                 console.log(res.data);
                 this.setState({
@@ -32,27 +38,38 @@ class home extends Component {
             })
     }
 
+    deleteItem = async (index) => {
+        let newArr = this.state.data;
+        this.setState({
+            data: null
+        })
+        await newArr.splice(index, 1);
+        this.setState({
+            data: newArr
+        })
+        console.log(index)
+    }
+
     render() {
         if (sessionStorage.getItem('token') == null) {
             return(<Redirect to={"/"}/>)
         }
 
         let dataMarkup = this.state.data ? (
-            this.state.data.map((data) => <Card data={data}/>)
+            this.state.data.map((data, i) => (
+                console.log(data, i),
+                <Card data={data} arrIndex={i} deleteItem={this.deleteItem}/>
+            ))
         ) : (
             <div className={"container-progress"}>
                 <CircularProgress/>
             </div>
         );
+
         return (
             <div className={"container-home"}>
                 <Navbar/>
                     <Grid container spacing={16}>
-                        {/*<Grid item sm={3} xs={12} style={{padding: 8}}>*/}
-                        {/*    <div>*/}
-                        {/*        <NewPost style={{position: "static"}}/>*/}
-                        {/*    </div>*/}
-                        {/*</Grid>*/}
                         <Grid item sm={12} xs={12} style={{padding: 8}} >
                             <div className={"dataMarkup"}>
                                 {dataMarkup}
