@@ -19,7 +19,7 @@ import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 
-// import axios from 'axios'
+import axios from 'axios'
 
 import wallClock from "../../static/image/wallClock.png"
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -44,16 +44,16 @@ class Paper extends Component {
         this.setState({
             alertStatus: true
         })
-        // axios.delete("http://0.0.0.0:8080/delete/"+this.state.id)
-        //     .then(res => {
-        //         // console.log(res)
-        //         this.setState({
-        //             alertStatus: true
-        //         })
-        //     })
-        //     .catch(err => {
-        //         // console.log(err)
-        //     })
+        axios.delete("http://10.72.1.41:8080/delete/"+this.state.id)
+            .then(res => {
+                // console.log(res)
+                // this.setState({
+                //     alertStatus: true
+                // })
+            })
+            .catch(err => {
+                // console.log(err)
+            })
     }
 
     dialogClickOpen = () => {
@@ -103,7 +103,7 @@ class Paper extends Component {
                     <div className={"container-content"}>
                         <div className={"container-information"}>
                             <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin"}}>NAME: {this.state.name}</Typography>
-                            <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin"}}>TIME ZONE: {this.state.age}</Typography>
+                            <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin"}}>TIME ZONE: {this.state.timeZone}</Typography>
                             <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin"}}>BATTERY : 100%</Typography>
                             <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin"}}>Arr Index : {this.state.arrIndex}</Typography>
                             <Typography variant="caption" style={{color: "#B7B7B7"}}>ID : {this.state.id}</Typography>

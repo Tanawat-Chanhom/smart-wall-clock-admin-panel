@@ -15,6 +15,7 @@ import "./Navber.css"
 import AddIcon from '@material-ui/icons/Add';
 import TextField from "@material-ui/core/TextField";
 import Button from '@material-ui/core/Button';
+import axios from "axios";
 
 class Navbar extends Component {
     constructor() {
@@ -22,7 +23,10 @@ class Navbar extends Component {
         this.state =  {
             anchorEl: null,
             anchorElPort: null,
-            date: new Date()
+            date: new Date(),
+            name: "",
+            clockId: "",
+            error: ""
         }
     }
 
@@ -42,20 +46,49 @@ class Navbar extends Component {
         this.setState({ anchorElPort: null });
     };
 
+    handleSavePost = () => {
+        let data = {
+            name: this.state.name,
+            age: this.state.clockId
+        }
+
+        let config = {
+            headers: {authorization: sessionStorage.getItem('token')}
+        }
+
+        axios.post("http://10.72.1.41:8080/post", data, config)
+            .then( res => {
+                this.setState({
+                    error: "Save Pass!!"
+                })
+                this.handleClosePost()
+            })
+            .catch(err => {
+                this.setState({
+                    error: "Save Fail!!"
+                })
+            })
+    };
 
     handleLogout() {
         sessionStorage.removeItem("token");
-    }
+    };
+
+    handleChange = (event) => {
+        this.setState({
+            [event.target.name]: event.target.value
+        });
+    };
 
     componentDidMount() {
         this.callMe()
-    }
+    };
 
     callMe() {
         setInterval(() => {
             this.setState({date: new Date()})
         }, 1000)
-    }
+    };
 
     render() {
         if (sessionStorage.getItem("token") != null) {
@@ -81,11 +114,12 @@ class Navbar extends Component {
                                 style={{padding: "10"}}
                             >
                                 <div className={"container-text-field-post"}>
-                                    <TextField margin="dense" variant="outlined" id="name" name={"name"} label="Name" type="text"/>
-                                    <TextField margin="dense" variant="outlined" id="clockId" name={"clockId"} label="Clock ID" type="text"/>
-                                    <Button variant="contained" color="primary" href="#contained-buttons" style={{marginTop: "10px"}}>
+                                    <TextField margin="dense" variant="outlined" id="name" name={"name"} label="Name" type="text" onChange={this.handleChange}/>
+                                    <TextField margin="dense" variant="outlined" id="clockId" name={"clockId"} label="Clock ID" type="text" onChange={this.handleChange}/>
+                                    <Button variant="contained" color="primary" style={{marginTop: "10px"}} onClick={this.handleSavePost}>
                                         Save
                                     </Button>
+                                    <Typography variant="caption" style={{color: "#B7B7B7", left: "50%", transform: "translateX(-50%)"}}>{this.state.error}</Typography>
                                 </div>
                             </Menu>
                             <IconButton 

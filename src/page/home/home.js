@@ -24,7 +24,7 @@ class home extends Component {
         let config = {
             headers: {authorization: sessionStorage.getItem('token')}
         }
-        axios.get("http://0.0.0.0:8080/get", config)
+        axios.get("http://10.72.1.41:8080/get", config)
             .then(res => {
                 console.log(res.data);
                 this.setState({
