@@ -18,6 +18,14 @@
     border-radius: 100em;
 }
 
+.container-text-field-post {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    margin: 10px;
+}
+
 @media screen and (max-width: 600px) {
     .container-img-logo img {
         width: 65%;

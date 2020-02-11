@@ -10,8 +10,6 @@ import Navbar from '../../components/Navber/Navbar.js';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import "./home.css";
-import DeleteIcon from "@material-ui/icons/Delete";
-import IconButton from "@material-ui/core/IconButton";
 
 class home extends Component {
 
@@ -26,7 +24,7 @@ class home extends Component {
         let config = {
             headers: {authorization: sessionStorage.getItem('token')}
         }
-        axios.get('http://192.168.1.34:8080/get', config)
+        axios.get("http://0.0.0.0:8080/get", config)
             .then(res => {
                 console.log(res.data);
                 this.setState({
@@ -57,7 +55,6 @@ class home extends Component {
 
         let dataMarkup = this.state.data ? (
             this.state.data.map((data, i) => (
-                console.log(data, i),
                 <Card data={data} arrIndex={i} deleteItem={this.deleteItem}/>
             ))
         ) : (

@@ -13,12 +13,15 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import timeLogo from "../../static/image/timeLogo.png"
 import "./Navber.css"
 import AddIcon from '@material-ui/icons/Add';
+import TextField from "@material-ui/core/TextField";
+import Button from '@material-ui/core/Button';
 
 class Navbar extends Component {
     constructor() {
         super();
         this.state =  {
             anchorEl: null,
+            anchorElPort: null,
             date: new Date()
         }
     }
@@ -31,6 +34,14 @@ class Navbar extends Component {
         this.setState({ anchorEl: null });
     };
 
+    handleClickPost = event => {
+        this.setState({ anchorElPort: event.currentTarget });
+    };
+
+    handleClosePost = () => {
+        this.setState({ anchorElPort: null });
+    };
+
 
     handleLogout() {
         sessionStorage.removeItem("token");
@@ -40,7 +51,7 @@ class Navbar extends Component {
         this.callMe()
     }
 
-    callMe () {
+    callMe() {
         setInterval(() => {
             this.setState({date: new Date()})
         }, 1000)
@@ -58,9 +69,25 @@ class Navbar extends Component {
                             <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin", letterSpacing: "2px"}}>{this.state.date.toLocaleTimeString()}</Typography>
                         </div>
                         <div className={"button-container"}>
-                            <IconButton color="secondary" component={Link} to="/home" >
+                            <IconButton color="secondary" component={Link} to="/home" onClick={this.handleClickPost}>
                                 <AddIcon/>
                             </IconButton>
+                            <Menu
+                                id="new-port"
+                                anchorEl={this.state.anchorElPort}
+                                keepMounted
+                                open={Boolean(this.state.anchorElPort)}
+                                onClose={this.handleClosePost}
+                                style={{padding: "10"}}
+                            >
+                                <div className={"container-text-field-post"}>
+                                    <TextField margin="dense" variant="outlined" id="name" name={"name"} label="Name" type="text"/>
+                                    <TextField margin="dense" variant="outlined" id="clockId" name={"clockId"} label="Clock ID" type="text"/>
+                                    <Button variant="contained" color="primary" href="#contained-buttons" style={{marginTop: "10px"}}>
+                                        Save
+                                    </Button>
+                                </div>
+                            </Menu>
                             <IconButton 
                                 aria-label="more"
                                 aria-controls="long-menu"
@@ -76,7 +103,7 @@ class Navbar extends Component {
                                 open={Boolean(this.state.anchorEl)}
                                 onClose={this.handleClose}
                             >
-                                <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                                <MenuItem onClick={this.handleClose} component={Link} to="/home">Home</MenuItem>
                                 <MenuItem onClick={this.handleClose} component={Link} to="/profile" >Profile</MenuItem>
                                 <MenuItem onClick={this.handleLogout} component={Link} to="/" >Logout</MenuItem>
                             </Menu>

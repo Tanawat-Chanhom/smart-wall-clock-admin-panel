@@ -29,7 +29,7 @@ class login extends Component {
             username: this.state.username,
             password: this.state.password
         }
-        await axios.post("http://192.168.1.34:8080/auth/login", data)
+        await axios.post("http://0.0.0.0:8080/auth/login", data)
             .then( res => {
                 if (res.data.token) {
                     sessionStorage.setItem("token", res.data.token);
