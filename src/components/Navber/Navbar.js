@@ -26,7 +26,8 @@ class Navbar extends Component {
             date: new Date(),
             name: "",
             clockId: "",
-            error: ""
+            error: "",
+            addItem: null
         }
     }
 
@@ -48,25 +49,35 @@ class Navbar extends Component {
 
     handleSavePost = () => {
         let data = {
-            name: this.state.name,
-            age: this.state.clockId
+            clockName: this.state.name,
+            clockId: this.state.clockId
         }
 
         let config = {
             headers: {authorization: sessionStorage.getItem('token')}
         }
 
-        axios.post("http://10.72.1.41:8080/post", data, config)
+        axios.post("https://us-central1-smart-wall-clock-c5a79.cloudfunctions.net/clock/newItem", data, config)
             .then( res => {
+                let data = res.data.clockData
+                this.state.addItem( data.clockId, data.name, data.timeZone, data.battery, data.tem, data.firebaseId );
                 this.setState({
                     error: "Save Pass!!"
                 })
-                this.handleClosePost()
+                setInterval( () => {
+                    this.handleClosePost()
+                    this.setState({
+                        error: ""
+                    })
+                }, 1000)
             })
             .catch(err => {
                 this.setState({
                     error: "Save Fail!!"
                 })
+                setInterval( () => {
+                    this.handleClosePost()
+                }, 1500)
             })
     };
 
@@ -82,6 +93,10 @@ class Navbar extends Component {
 
     componentDidMount() {
         this.callMe()
+        const { addItem } = this.props;
+        this.setState({
+            addItem: addItem
+        })
     };
 
     callMe() {
@@ -114,12 +129,10 @@ class Navbar extends Component {
                                 style={{padding: "10"}}
                             >
                                 <div className={"container-text-field-post"}>
-                                    <TextField margin="dense" variant="outlined" id="name" name={"name"} label="Name" type="text" onChange={this.handleChange}/>
-                                    <TextField margin="dense" variant="outlined" id="clockId" name={"clockId"} label="Clock ID" type="text" onChange={this.handleChange}/>
-                                    <Button variant="contained" color="primary" style={{marginTop: "10px"}} onClick={this.handleSavePost}>
-                                        Save
-                                    </Button>
-                                    <Typography variant="caption" style={{color: "#B7B7B7", left: "50%", transform: "translateX(-50%)"}}>{this.state.error}</Typography>
+                                    <TextField margin="dense" variant="outlined" name={"name"} label="Name" type="text" onChange={this.handleChange}/>
+                                    <TextField margin="dense" variant="outlined" name={"clockId"} label="Clock ID" type="text" onChange={this.handleChange}/>
+                                    <Button variant="contained" color="primary" style={{marginTop: "10px"}} onClick={this.handleSavePost}>Save</Button>
+                                    <Typography variant="caption" style={{color: "#B7B7B7", left: "50%", transform: "translateX(-50%)", position: "relative", marginTop: "10px", textAlign: "center"}}>{this.state.error}</Typography>
                                 </div>
                             </Menu>
                             <IconButton 

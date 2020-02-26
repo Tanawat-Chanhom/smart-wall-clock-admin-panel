@@ -5,8 +5,10 @@ import axios from 'axios'
 import Typography from '@material-ui/core/Typography'
 import { Grid } from '@material-ui/core';
 import {Redirect} from 'react-router-dom'
+import PATH from '../../utils/Path';
 
 // import Navbar from '../../components/Navber/Navbar.js';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import './login.css';
 
@@ -20,16 +22,20 @@ class login extends Component {
             username: '',
             password: '',
             error: '',
-            status: false
+            status: false,
+            onLoading: false
         }
     }
 
     handleSubmit = async (event) => {
+        this.setState({
+            onLoading: true
+        })
         let data = {
             username: this.state.username,
             password: this.state.password
         }
-        await axios.post("http://10.72.1.41:8080/auth/login", data)
+        await axios.post(PATH.AUTH+"/login", data)
             .then( res => {
                 if (res.data.token) {
                     sessionStorage.setItem("token", res.data.token);
@@ -38,7 +44,8 @@ class login extends Component {
                     })
                 } else {
                     this.setState({
-                        error: "Username or password is incorrect."
+                        error: res.data.message,
+                        onLoading: false
                     })
                 }
             })
@@ -53,8 +60,24 @@ class login extends Component {
     }
 
     render() {
+        let error;
+
         if (this.state.status || sessionStorage.getItem("token") != null) {
             return (<Redirect to={"/home"}/>)
+        }
+
+        let test = this.state.onLoading ? (
+            <CircularProgress />
+        ) : (
+            <Button variant="outlined" color="primary" onClick={this.handleSubmit}>Sign in</Button>
+        );
+
+        if (this.state.error != "") {
+            error = (
+                <div className={"error-text"}>
+                    <Typography variant="overline" style={{color: "red"}}>{this.state.error}</Typography>
+                </div>
+            );
         }
 
         return (
@@ -67,20 +90,19 @@ class login extends Component {
                 </div>
                 <div className={"form-container"}>
                     <form noValidate>
-                        <Grid container direction="column" justify="space-around" alignItems="center">
-                            <div className={"form-login"}>
+                        <div className={"form-login"}>
+                            <div>
                                 <TextField id="outlined-basic" label="Username" type="text" name="username" variant="outlined" fullWidth onChange={this.handleChange}/><br/>
+                            </div>
+                            <div style={{marginTop: "8%"}}>
                                 <TextField id="outlined-basic" label="Password" type="password" name="password" variant="outlined" fullWidth onChange={this.handleChange}/><br/>
                             </div>
-                            {/*<Grid container >*/}
-                            {/*    <Grid item sm={12} xs={12} style={{padding: 8}}>*/}
-                            {/*        */}
-                            {/*    </Grid>*/}
-                            {/*</Grid>*/}
-                        </Grid>
+                        </div>
                     </form>
-                    <Button variant="outlined" color="primary" className={"bottom-sign"} onClick={this.handleSubmit}>Sign in</Button>
-                    <Typography variant="overline" style={{color: "red"}}>{this.state.error}</Typography>
+                    <div className={"bottom-sign"}>
+                        { test }
+                    </div>
+                    { error }
                 </div>
             </div>
         )

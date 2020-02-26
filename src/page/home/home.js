@@ -24,11 +24,11 @@ class home extends Component {
         let config = {
             headers: {authorization: sessionStorage.getItem('token')}
         }
-        axios.get("http://10.72.1.41:8080/get", config)
+        axios.get("https://us-central1-smart-wall-clock-c5a79.cloudfunctions.net/clock/items", config)
             .then(res => {
-                console.log(res.data);
+                console.log(res.data.arrayOfClock);
                 this.setState({
-                    data: res.data
+                    data: res.data.arrayOfClock
                 })
             })
             .catch(err => {
@@ -45,7 +45,25 @@ class home extends Component {
         this.setState({
             data: newArr
         })
-        console.log(index)
+    }
+
+    addItem = async ( clockId, name, timeZone, battery, tem, firebaseId ) => {
+        console.log(this.state.data);
+        let data = {
+            id: clockId,
+            name: name,
+            timeZone: timeZone,
+            battery: battery,
+            tem: tem,
+            firebaseId: firebaseId,
+            arrIndex: this.state.data.length+1,
+            deleteItem: this.deleteItem
+        }
+        let newArr = await this.state.data;
+        await newArr.push(data);
+        this.setState({
+            data: newArr
+        })
     }
 
     render() {
@@ -65,7 +83,7 @@ class home extends Component {
 
         return (
             <div className={"container-home"}>
-                <Navbar/>
+                <Navbar addItem={this.addItem}/>
                     <Grid container spacing={16}>
                         <Grid item sm={12} xs={12} style={{padding: 8}} >
                             <div className={"dataMarkup"}>

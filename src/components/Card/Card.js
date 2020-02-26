@@ -34,6 +34,9 @@ class Paper extends Component {
             dialog: false,
             name: '',
             timeZone: '',
+            battery: 0,
+            tem: 0,
+            firebaseId: "",
             deleteItem: null,
             arrIndex: 0,
             alertStatus: null
@@ -44,15 +47,15 @@ class Paper extends Component {
         this.setState({
             alertStatus: true
         })
-        axios.delete("http://10.72.1.41:8080/delete/"+this.state.id)
+        axios.delete("https://us-central1-smart-wall-clock-c5a79.cloudfunctions.net/clock/item/"+this.state.firebaseId)
             .then(res => {
-                // console.log(res)
+                console.log(res)
                 // this.setState({
                 //     alertStatus: true
                 // })
             })
             .catch(err => {
-                // console.log(err)
+                console.log(err)
             })
     }
 
@@ -68,12 +71,30 @@ class Paper extends Component {
         })
     };
 
+    saveChange = () => {
+        let data = {
+            clockName: this.state.name,
+            timeZone: this.state.timeZone
+        }
+        axios.put("https://us-central1-smart-wall-clock-c5a79.cloudfunctions.net/clock/item/"+this.state.firebaseId, data)
+            .then(res => {
+                console.log(res)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        this.dialogClose()
+    }
+
     componentDidMount() {
-        const { data: { id, name, age }, arrIndex, deleteItem } = this.props;
+        const { data: { clockId, name, timeZone, battery, tem, firebaseId }, arrIndex, deleteItem } = this.props;
         this.setState({
-            id: id,
+            id: clockId,
             name: name,
-            timeZone: age,
+            timeZone: timeZone,
+            battery: battery,
+            tem: tem,
+            firebaseId: firebaseId,
             arrIndex: arrIndex,
             deleteItem: deleteItem
         })
@@ -104,8 +125,8 @@ class Paper extends Component {
                         <div className={"container-information"}>
                             <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin"}}>NAME: {this.state.name}</Typography>
                             <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin"}}>TIME ZONE: {this.state.timeZone}</Typography>
-                            <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin"}}>BATTERY : 100%</Typography>
-                            <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin"}}>Arr Index : {this.state.arrIndex}</Typography>
+                            <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin"}}>BATTERY : {this.state.battery}%</Typography>
+                            <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin"}}>TEMPERATURE : {this.state.tem}°C</Typography>
                             <Typography variant="caption" style={{color: "#B7B7B7"}}>ID : {this.state.id}</Typography>
                         </div>
                     </div>
@@ -137,7 +158,7 @@ class Paper extends Component {
                             <Button onClick={this.dialogClose} color="primary">
                                 Cancel
                             </Button>
-                            <Button onClick={this.dialogClose} color="primary">
+                            <Button onClick={this.saveChange} color="primary">
                                 Save Change
                             </Button>
                         </DialogActions>

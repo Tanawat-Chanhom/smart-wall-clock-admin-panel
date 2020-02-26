@@ -18,9 +18,15 @@
 }
 
 .bottom-sign {
-    width: 50%;
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.error-text {
+    position: relative;
+    display: flex;
+    justify-content: center;
 }
 
 
@@ -62,6 +68,46 @@
     .container-login {
         width: 75%;
         height: 80%;
-        min-height: 450px;
+        /*min-height: 450px;*/
+    }
+}
+
+@media screen and (max-height: 476px){
+    .container-login {
+        width: 75%;
+        height: 80%;
+        /*min-height: 450px;*/
+    }
+
+    .container-logo img {
+        position: relative;
+        top: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 17%;
+    }
+
+    .form-container {
+        flex-direction: row;
+        justify-content: space-evenly;
+        width: 100%;
+    }
+
+    .container-title h4 {
+        font-size: 5vmin;
+    }
+
+    .form-login {
+        justify-content: space-between;
+        height: 100%;
+    }
+
+    .bottom-sign {
+        margin-left: 3%;
+    }
+
+    .error-text {
+        text-align: center;
+        margin-left: 3%;
     }
 }
