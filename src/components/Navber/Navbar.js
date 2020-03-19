@@ -2,6 +2,11 @@ import React, { Component } from 'react'
 import Link from 'react-router-dom/Link'
 
 //MUI
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import AppBar from '@material-ui/core/AppBar'
 import ToolBar from '@material-ui/core/Toolbar'
 // import Button from '@material-ui/core/Button'
@@ -40,11 +45,11 @@ class Navbar extends Component {
     };
 
     handleClickPost = event => {
-        this.setState({ anchorElPort: event.currentTarget });
+        this.setState({ dialog: true });
     };
 
     handleClosePost = () => {
-        this.setState({ anchorElPort: null });
+        this.setState({ dialog: false });
     };
 
     handleSavePost = () => {
@@ -120,21 +125,26 @@ class Navbar extends Component {
                             <IconButton color="secondary" component={Link} to="/home" onClick={this.handleClickPost}>
                                 <AddIcon/>
                             </IconButton>
-                            <Menu
-                                id="new-port"
-                                anchorEl={this.state.anchorElPort}
-                                keepMounted
-                                open={Boolean(this.state.anchorElPort)}
-                                onClose={this.handleClosePost}
-                                style={{padding: "10"}}
-                            >
-                                <div className={"container-text-field-post"}>
-                                    <TextField margin="dense" variant="outlined" name={"name"} label="Name" type="text" onChange={this.handleChange}/>
-                                    <TextField margin="dense" variant="outlined" name={"clockId"} label="Clock ID" type="text" onChange={this.handleChange}/>
-                                    <Button variant="contained" color="primary" style={{marginTop: "10px"}} onClick={this.handleSavePost}>Save</Button>
-                                    <Typography variant="caption" style={{color: "#B7B7B7", left: "50%", transform: "translateX(-50%)", position: "relative", marginTop: "10px", textAlign: "center"}}>{this.state.error}</Typography>
-                                </div>
-                            </Menu>
+                            <Dialog open={this.state.dialog} onClose={this.handleClosePost} aria-labelledby="form-dialog-title">
+                                <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText>
+                                        To subscribe to this website, please enter your email address here. We will send updates
+                                        occasionally.
+                                    </DialogContentText>
+                                    <TextField autoFocus margin="dense" name="name" label="Name" type="text" fullWidth onChange={this.handleChange}/>
+                                    <TextField autoFocus margin="dense" name="clockId" label="Clock ID" type="text" fullWidth onChange={this.handleChange}/>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={this.handleClosePost} color="primary">
+                                        Cancel
+                                    </Button>
+                                    <Button onClick={this.handleSavePost} color="primary">
+                                        Subscribe
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
+
                             <IconButton 
                                 aria-label="more"
                                 aria-controls="long-menu"
