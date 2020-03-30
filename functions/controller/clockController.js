@@ -2,46 +2,56 @@ const express = require('express');
 const cors = require('cors');
 const clock = express();
 const admin = require("../utils/Config");
-const firestore = admin.firestore();
 const { validateToken } = require('../utils/User');
 clock.use(cors({ origin: true }));
 
 clock.get('/items', async (req, res) => {
     try {
         let { authorization } = req.headers;
-        let arrayOfClock = [];
         let {userId} = await validateToken(authorization);
-        let clockRef = firestore.collection('Clocks');
-        let data = await new Promise(async function (resolve) {
-            await clockRef.where('userId', '==', userId).get()
-                .then(doc => {
-                    if (doc.isEmpty) {
-                        console.log("No such document!");
-                        resolve(false);
-                    } else {
-                        doc.forEach(doc => {
-                            let clockData = doc.data();
-                            clockData.firebaseId = doc.id;
-                            arrayOfClock.push(clockData)
+        if (userId) {
+            let data_ = [];
+            let clocksRef = admin.database().ref('/Clocks')
+            let arrayOfClocks = await new Promise(async (resolve) => {
+                await clocksRef.once("value")
+                    .then(snap => {
+                        snap.forEach(data => {
+                            if (data.val().userId == userId) {
+                                let clockData = data.val()
+                                clockData.firebaseId = data.key
+                                data_.push(clockData)
+                            }
                         })
-                        resolve(arrayOfClock);
-                    }
+                        resolve(data_)
+                    }).catch(error => {
+                        console.log('Error getting documents' ,error);
+                        resolve(false);
+                    })
+            })
+
+            if (arrayOfClocks) {
+                res.send({
+                    statusCode: 200,
+                    message: "Successfully",
+                    arrayOfClock: arrayOfClocks
                 })
-                .catch(err => {
-                    console.log('Error getting documents' ,err);
-                    resolve(false);
+            } else {
+                res.send({
+                    statusCode: 400,
+                    message: "Fail"
                 })
-        })
-        res.send({
-            statusCode: 200,
-            message: "Successfully",
-            arrayOfClock: data
-        })
+            }
+        } else {
+            res.send({
+                statusCode: 401,
+                message: "Authorization fail"
+            })
+        }
     } catch (e) {
         res.send({
             statusCode: 500,
             message: "Internal server error",
-            error: e
+            error: e.toString()
         })
     }
 });
@@ -51,38 +61,50 @@ clock.post('/newItem', async (req, res) => {
         let { clockName, clockId } = req.body;
         let { authorization } = req.headers;
         let {userId} = await validateToken(authorization);
-        let saveClock = await firestore.collection('Clocks').add({
-            clockId: clockId,
-            name: clockName,
-            timeZone: 'thai',
-            battery: 0,
-            tem: 0,
-            userId: userId
-        })
-        if (saveClock) {
-            res.send({
-                statusCode: 200,
-                message: "Save successfully",
-                clockData: {
-                    clockId: clockId,
-                    name: clockName,
-                    timeZone: 'thai',
-                    battery: 0,
-                    tem: 0,
-                    firebaseId: saveClock.id
-                }
-            })
+        if (userId) {
+            let dataTemplate = {
+                "clockName": clockName,
+                "timeZone": "Thai",
+                "roomTemperature": 0,
+                "clockBattery": 0,
+                "clockId": clockId,
+                "userId": userId
+            };
+
+            let ref = admin.database().ref('/Clocks');
+            let saveClock = ref.push(dataTemplate)
+
+            if (saveClock) {
+                res.send({
+                    statusCode: 200,
+                    message: "Save successfully",
+                    clockData: {
+                        clockName: clockName,
+                        timeZone: "Thai",
+                        roomTemperature: 0,
+                        clockBattery: 0,
+                        clockId: clockId,
+                        userId: userId,
+                        firebaseId: saveClock.key
+                    }
+                })
+            } else {
+                res.send({
+                    statusCode: 400,
+                    message: "Save fail"
+                })
+            }
         } else {
             res.send({
-                statusCode: 400,
-                message: "Save fail"
+                statusCode: 401,
+                message: "Authorization fail"
             })
         }
     } catch (e) {
         res.send({
             statusCode: 500,
             message: "Internal server error",
-            error: e
+            error: e.toString()
         })
     }
 });
@@ -91,27 +113,37 @@ clock.put('/item/:firebaseId', async (req, res) => {
     try {
         let { clockName, timeZone } = req.body;
         let { firebaseId } = req.params;
-        let clockRef = await firestore.collection('Clocks').doc(firebaseId);
-        let updateClock = await clockRef.update({
-            name: clockName,
-            timeZone: timeZone
-        })
-        if (updateClock) {
-            res.send({
-                statusCode: 200,
-                message: "Save successfully"
-            })
+        let { authorization } = req.headers;
+        let {userId} = await validateToken(authorization);
+        if (userId) {
+            let ref = admin.database().ref('/Clocks/' + firebaseId);
+            let updateClock = ref.update({
+                "clockName": clockName,
+                "timeZone": timeZone
+            });
+
+            if (updateClock) {
+                res.send({
+                    statusCode: 200,
+                    message: "Save successfully"
+                })
+            } else {
+                res.send({
+                    statusCode: 400,
+                    message: "Save fail"
+                })
+            }
         } else {
             res.send({
-                statusCode: 400,
-                message: "Save fail"
+                statusCode: 401,
+                message: "Authorization fail"
             })
         }
     } catch (e) {
         res.send({
             statusCode: 500,
             message: "Internal server error",
-            error: e
+            error: e.toString()
         })
     }
 });
@@ -119,24 +151,35 @@ clock.put('/item/:firebaseId', async (req, res) => {
 clock.delete('/item/:firebaseId', async (req, res) => {
     try {
         let { firebaseId } = req.params;
-        let clockRef = await firestore.collection('Clocks').doc(firebaseId);
-        let delClock = await clockRef.delete();
-        if (delClock) {
-            res.send({
-                statusCode: 200,
-                message: "Delete successfully"
-            })
+        let { authorization } = req.headers;
+        let {userId} = await validateToken(authorization);
+
+        if (userId) {
+            let ref = admin.database().ref('/Clocks/' + firebaseId);
+            let delClock = ref.remove();
+
+            if (delClock) {
+                res.send({
+                    statusCode: 200,
+                    message: "Delete successfully"
+                })
+            } else {
+                res.send({
+                    statusCode: 400,
+                    message: "Delete fail"
+                })
+            }
         } else {
             res.send({
-                statusCode: 400,
-                message: "Delete fail"
+                statusCode: 401,
+                message: "Authorization fail"
             })
         }
     } catch (e) {
         res.send({
             statusCode: 500,
             message: "Internal server error",
-            error: e
+            error: e.toString()
         })
     }
 });

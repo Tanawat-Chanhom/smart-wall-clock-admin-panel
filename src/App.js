@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 
 //Pages
@@ -31,13 +31,11 @@ class App extends Component {
       <MuiThemeProvider theme={theme}>
         <div className="App">
           <Router>
-              {/*<div className="container">*/}
-                <Switch>
-                  <Route exact path="/home" component={Home}></Route>
-                  <Route exact path="/" component={Login}></Route>
-                  <Route exact path="/profile" component={Profile}></Route>
-                </Switch>
-              {/*</div>*/}
+              <Switch>
+                <Route exact path="/home" component={Home}></Route>
+                <Route exact path="/" component={Login}></Route>
+                <Route exact path="/profile" component={Profile}></Route>
+              </Switch>
           </Router>
         </div>
       </MuiThemeProvider>

@@ -20,8 +20,11 @@ async function generateToken(userId) {
 module.exports = {
     validateToken: async (token) => {
         try {
-            //let token = request.headers.authorization;
-            var decoded = jwt.verify(token, process.env.JWT_KEY);
+            if (token == undefined || token == "") {
+                return  false
+            }
+
+            let decoded = jwt.verify(token, process.env.JWT_KEY);
             if (decoded) {
                 return decoded
             } else {
@@ -51,7 +54,6 @@ module.exports = {
                     });
             });
             if (data) {
-                console.log(data.data());
                 if (data.data().password == password) {
                     return {
                         status: true,

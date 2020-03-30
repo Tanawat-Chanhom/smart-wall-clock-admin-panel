@@ -11,6 +11,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import "./home.css";
 
+import PATH from '../../utils/Path'
+
 class home extends Component {
 
     constructor() {
@@ -24,7 +26,7 @@ class home extends Component {
         let config = {
             headers: {authorization: sessionStorage.getItem('token')}
         }
-        axios.get("https://us-central1-smart-wall-clock-c5a79.cloudfunctions.net/clock/items", config)
+        axios.get(PATH.CLOCK+"/items", config)
             .then(res => {
                 console.log(res.data.arrayOfClock);
                 this.setState({
@@ -47,14 +49,13 @@ class home extends Component {
         })
     }
 
-    addItem = async ( clockId, name, timeZone, battery, tem, firebaseId ) => {
-        console.log(this.state.data);
+    addItem = async ( clockId, clockName, timeZone, clockBattery, roomTemperature, firebaseId ) => {
         let data = {
             id: clockId,
-            name: name,
+            name: clockName,
             timeZone: timeZone,
-            battery: battery,
-            tem: tem,
+            battery: clockBattery,
+            tem: roomTemperature,
             firebaseId: firebaseId,
             arrIndex: this.state.data.length+1,
             deleteItem: this.deleteItem

@@ -3,7 +3,6 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button'
 import axios from 'axios'
 import Typography from '@material-ui/core/Typography'
-import { Grid } from '@material-ui/core';
 import {Redirect} from 'react-router-dom'
 import PATH from '../../utils/Path';
 
@@ -72,7 +71,7 @@ class login extends Component {
             <Button variant="outlined" color="primary" onClick={this.handleSubmit}>Sign in</Button>
         );
 
-        if (this.state.error != "") {
+        if (this.state.error !== "") {
             error = (
                 <div className={"error-text"}>
                     <Typography variant="overline" style={{color: "red"}}>{this.state.error}</Typography>

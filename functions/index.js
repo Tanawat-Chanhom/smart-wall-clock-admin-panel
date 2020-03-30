@@ -19,4 +19,4 @@ exports.node = functions.https.onRequest(node);
 /*
  * Server Start
  */
-app.listen(process.env.PORT, () => console.log('Server started at port:'+process.env.PORT));
+// app.listen(process.env.PORT, () => console.log('Server started at port:'+process.env.PORT));
