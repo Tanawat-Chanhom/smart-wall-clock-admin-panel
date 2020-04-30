@@ -5,21 +5,21 @@ import './Card.css'
 //Mui
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
-import wallClock from "../../static/image/wallClock.png"
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 import IconButton from "@material-ui/core/IconButton";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import HistoryIcon from '@material-ui/icons/History';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import UpdateIcon from '@material-ui/icons/Update';
 
 import axios from 'axios'
 import PATH from '../../utils/Path'
@@ -34,10 +34,11 @@ class Paper extends Component {
             timeZone: '',
             clockBattery: 0,
             roomTemperature: 0,
-            firebaseId: "",
+            firebaseId: '',
             deleteItem: null,
             arrIndex: 0,
-            alertStatus: null
+            alertStatus: null,
+            error: ''
         };
     }
 
@@ -72,7 +73,7 @@ class Paper extends Component {
 
     saveChange = () => {
         let data = {
-            clockName: this.state.name,
+            clockName: this.state.clockName,
             timeZone: this.state.timeZone
         };
         let config = {
@@ -128,41 +129,61 @@ class Paper extends Component {
 
     render() {
         return (
-            <Card className={"card"} style={{borderRadius: "27px"}}>
-                <CardMedia image={wallClock} title="Test" className={"image"} />
-                <CardContent style={{width: '100%', paddingLeft: "0"}}>
+            <Card className={"card"} style={{borderRadius: "0.5em", padding: '10px'}}>
+                <CardContent style={{width: '100%', padding: "0"}}>
                     <div className={"container-content"}>
                         <div className={"container-information"}>
-                            <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin"}}>NAME: {this.state.clockName}</Typography>
-                            <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin"}}>TIME ZONE: {this.state.timeZone}</Typography>
-                            <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin"}}>BATTERY : {this.state.clockBattery}%</Typography>
-                            <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin"}}>TEMPERATURE : {this.state.roomTemperature}°C</Typography>
-                            <Typography variant="caption" style={{color: "#B7B7B7"}}>ID : {this.state.id}</Typography>
+                            <Typography variant="p" style={{color: "#707070",width: '100%'}}>NAME: {this.state.clockName}</Typography>
+                            <Typography variant="p" style={{color: "#707070",width: '100%'}}>TIME ZONE: {this.state.timeZone}</Typography>
+                            <Typography variant="p" style={{color: "#707070",width: '100%'}}>BATTERY : {this.state.clockBattery}%</Typography>
+                            <Typography variant="p" style={{color: "#707070",width: '100%'}}>TEMPERATURE : {this.state.roomTemperature}°C</Typography>
+                            <Typography variant="caption" style={{color: "#B7B7B7", fontSize: '1vmin', width: '100%'}}>ID : {this.state.id}</Typography>
                         </div>
                     </div>
                 </CardContent>
                 <div>
                     <form className={"form"}>
                         <div className={"container-button"}>
-                            <IconButton color="secondary" aria-label="upload picture" component="span" onClick={this.dialogClickOpen} style={{backgroundColor: "#80808038", borderRadius: "5px 20px 5px 5px", margin: "10px"}}>
-                                <EditTwoToneIcon style={{color: "#7F7F7F"}} />
+                            <IconButton color="secondary" aria-label="upload picture" component="span" onClick={this.dialogClickOpen} style={{backgroundColor: "#80808038", borderRadius: "0.2em", padding: "10px", margin: '5px'}}>
+                                <EditTwoToneIcon/>
                             </IconButton>
-                            <IconButton color="primary" aria-label="upload picture" component="span" onClick={this.handleDelete} style={{backgroundColor: "#ffbaba", borderRadius: "5px 5px 20px 5px", margin: "10px"}}>
-                                <DeleteIcon style={{color: "#7F7F7F"}} />
+                            <IconButton color="primary" aria-label="upload picture" component="span" onClick={this.handleDelete} style={{backgroundColor: "#ffbaba", borderRadius: "0.2em", padding: "10px", margin: '5px'}}>
+                                <DeleteIcon/>
                             </IconButton>
                         </div>
                     </form>
                 </div>
                 <div>
                     <Dialog open={this.state.dialog} onClose={this.dialogClose} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title">Config your clock.</DialogTitle>
+                        <DialogTitle id="form-dialog-title">SETTING.</DialogTitle>
                         <DialogContent>
-                            <DialogContentText>
-                                <Typography variant="caption" style={{color: "#B7B7B7"}}>{this.state.clockName}</Typography>
-                                <Typography variant="caption" style={{color: "#B7B7B7"}}>{this.state.timeZone}</Typography>
-                            </DialogContentText>
-                            <TextField margin="dense" id="name" name={"name"} label="Name" type="text" defaultValue={this.state.clockName} onChange={this.handleChange} fullWidth/>
+                            <TextField margin="dense" id="clockName" name={"clockName"} label="Clock Name" type="text" defaultValue={this.state.clockName} onChange={this.handleChange} fullWidth/>
                             <TextField margin="dense" id="timeZone" name={"timeZone"} label="Time Zone" type="text" defaultValue={this.state.timeZone} onChange={this.handleChange} fullWidth/>
+                            <Typography variant="H2" style={{color: "#707070",width: '100%'}}>Actions: </Typography>
+                            <IconButton color="secondary" aria-label="upload picture" component="span"  style={{borderRadius: "0.2em", padding: "10px", margin: '5px'}}>
+                                <ArrowBackIcon/>
+                            </IconButton>
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                startIcon={<HighlightOffIcon />}
+                            >
+                                STOP
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                startIcon={<UpdateIcon />}
+                                style={{marginLeft: '5px'}}
+                            >
+                                RUN
+                            </Button>
+                            <IconButton color="secondary" aria-label="upload picture" component="span"  style={{borderRadius: "0.2em", padding: "10px", margin: '5px'}}>
+                                <ArrowForwardIcon/>
+                            </IconButton>
+                            <IconButton color="primary"  aria-label="upload picture" component="span"  style={{borderRadius: "0.2em", padding: "10px", margin: '5px'}}>
+                                <HistoryIcon/>
+                            </IconButton>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={this.dialogClose} color="primary">
@@ -173,13 +194,6 @@ class Paper extends Component {
                             </Button>
                         </DialogActions>
                     </Dialog>
-                </div>
-                <div>
-                    <Snackbar open={this.state.alertStatus} autoHideDuration={6000} onClose={this.alertClose}>
-                        <Alert onClose={this.alertClose} severity="success">
-                            This is a success message!
-                        </Alert>
-                    </Snackbar>
                 </div>
             </Card>
         )

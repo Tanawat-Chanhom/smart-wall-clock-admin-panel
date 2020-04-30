@@ -68,32 +68,42 @@ clock.post('/newItem', async (req, res) => {
                 "roomTemperature": 0,
                 "clockBattery": 0,
                 "clockId": clockId,
-                "userId": userId
+                "userId": userId,
+                "clockStatus": 'Device OFF',
+                "clockFunction": 0
             };
 
-            let ref = admin.database().ref('/Clocks');
-            let saveClock = ref.push(dataTemplate)
-
-            if (saveClock) {
-                res.send({
-                    statusCode: 200,
-                    message: "Save successfully",
-                    clockData: {
-                        clockName: clockName,
-                        timeZone: "Thai",
-                        roomTemperature: 0,
-                        clockBattery: 0,
-                        clockId: clockId,
-                        userId: userId,
-                        firebaseId: saveClock.key
+            let ref = admin.database().ref('/Clocks/'+clockId);
+            ref.once('value').then(data => {
+                if (data.val() == null) {
+                    let saveClock = ref.set(dataTemplate)
+                    if (saveClock) {
+                        res.send({
+                            statusCode: 200,
+                            message: "Save successfully",
+                            clockData: {
+                                clockName: clockName,
+                                timeZone: "Thai",
+                                roomTemperature: 0,
+                                clockBattery: 0,
+                                clockId: clockId,
+                                userId: userId,
+                                firebaseId: saveClock.key
+                            }
+                        })
+                    } else {
+                        res.send({
+                            statusCode: 400,
+                            message: "Save fail"
+                        })
                     }
-                })
-            } else {
-                res.send({
-                    statusCode: 400,
-                    message: "Save fail"
-                })
-            }
+                } else {
+                    res.send({
+                        statusCode: 400,
+                        message: "Have already"
+                    })
+                }
+            })
         } else {
             res.send({
                 statusCode: 401,

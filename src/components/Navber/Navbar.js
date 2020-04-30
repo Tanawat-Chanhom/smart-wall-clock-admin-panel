@@ -6,7 +6,6 @@ import "./Navber.css"
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import AppBar from '@material-ui/core/AppBar'
 import ToolBar from '@material-ui/core/Toolbar'
@@ -33,7 +32,8 @@ class Navbar extends Component {
             name: "",
             clockId: "",
             error: "",
-            addItem: null
+            addItem: null,
+            dialog: false
         }
     }
 
@@ -46,6 +46,9 @@ class Navbar extends Component {
     };
 
     handleClickPost = () => {
+        this.setState({
+            error: ""
+        })
         this.setState({ dialog: true });
     };
 
@@ -54,6 +57,7 @@ class Navbar extends Component {
     };
 
     handleSavePost = () => {
+
         let data = {
             clockName: this.state.name,
             clockId: this.state.clockId
@@ -65,25 +69,28 @@ class Navbar extends Component {
 
         axios.post(PATH.CLOCK +"/newItem", data, config)
             .then( res => {
-                let data = res.data.clockData;
-                this.state.addItem( data.clockId, data.name, data.timeZone, data.battery, data.tem, data.firebaseId );
-                this.setState({
-                    error: "Save Pass!!"
-                });
-                setInterval( () => {
-                    this.handleClosePost();
+                if (res.data.statusCode === 200) {
+                    let data = res.data.clockData;
+                    this.state.addItem( data.clockId, data.name, data.timeZone, data.battery, data.tem, data.firebaseId );
                     this.setState({
-                        error: ""
-                    })
-                }, 1000)
+                        error: res.data.message
+                    });
+                    setInterval( () => {
+                        this.handleClosePost();
+                        this.setState({
+                            error: ""
+                        })
+                    }, 1000)
+                } else {
+                    this.setState({
+                        error: res.data.message
+                    });
+                }
             })
-            .catch( () => {
+            .catch( error => {
                 this.setState({
-                    error: "Save Fail!!"
+                    error: error.message
                 });
-                setInterval( () => {
-                    this.handleClosePost()
-                }, 1500)
             })
     };
 
@@ -114,28 +121,26 @@ class Navbar extends Component {
     render() {
         if (sessionStorage.getItem("token") != null) {
             return (
-                <AppBar>
+                <AppBar style={{position: 'relative'}}>
                     <ToolBar style={{justifyContent: "space-between", backgroundColor: "#EAEAEA"}}>
                         <div className={"container-img-logo"}>
                             <img src={timeLogo} alt=""/>
                         </div>
                         <div className={"container-time"}>
-                            <Typography variant="h6" style={{color: "#707070", fontSize: "3vmin", letterSpacing: "2px"}}>{this.state.date.toLocaleTimeString()}</Typography>
+                            <Typography variant="h6">{this.state.date.toLocaleTimeString()}</Typography>
                         </div>
                         <div className={"button-container"}>
                             <IconButton color="secondary" component={Link} to="/home" onClick={this.handleClickPost}>
                                 <AddIcon/>
                             </IconButton>
+
                             <Dialog open={this.state.dialog} onClose={this.handleClosePost} aria-labelledby="form-dialog-title">
                                 <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
                                 <DialogContent>
-                                    <DialogContentText>
-                                        To subscribe to this website, please enter your email address here. We will send updates
-                                        occasionally.
-                                    </DialogContentText>
                                     <TextField autoFocus margin="dense" name="name" label="Name" type="text" fullWidth onChange={this.handleChange}/>
                                     <TextField autoFocus margin="dense" name="clockId" label="Clock ID" type="text" fullWidth onChange={this.handleChange}/>
                                 </DialogContent>
+                                <Typography variant="caption" style={{margin: '20px'}}>{this.state.error}</Typography>
                                 <DialogActions>
                                     <Button onClick={this.handleClosePost} color="primary">
                                         Cancel
@@ -161,8 +166,8 @@ class Navbar extends Component {
                                 open={Boolean(this.state.anchorEl)}
                                 onClose={this.handleClose}
                             >
-                                <MenuItem onClick={this.handleClose} component={Link} to="/home">Home</MenuItem>
-                                <MenuItem onClick={this.handleClose} component={Link} to="/profile" >Profile</MenuItem>
+                                {/*<MenuItem onClick={this.handleClose} component={Link} to="/home">Home</MenuItem>*/}
+                                {/*<MenuItem onClick={this.handleClose} component={Link} to="/profile" >Profile</MenuItem>*/}
                                 <MenuItem onClick={this.handleLogout} component={Link} to="/" >Logout</MenuItem>
                                 <MenuItem onClick={this.handleClose} >Version: 0.12.0</MenuItem>
                             </Menu>

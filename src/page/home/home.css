@@ -1,3 +1,10 @@
+.content-container {
+    position: relative;
+    display: grid;
+    grid-template-columns: 25% 75%;
+    height: 100vh;
+}
+
 .post-container {
     position: absolute;
     margin: 1%;
@@ -12,25 +19,126 @@
 }
 
 .container-home {
-    margin: 70px auto 0 auto;
-}
-
-.dataMarkup {
-    display: flex;
-    flex-wrap: wrap;
+    position: relative;
 }
 
 .container-progress {
-    position: fixed;
+    position: relative;
     top: 50%;
     left: 50%;
+    width: fit-content;
     transform: translate(-50%, -50%);
 }
 
+.clocks-items-container {
+    position: relative;
+    display: grid;
+    grid-template-rows: 8% 92%;
+    max-height: 100vh;
+    background-color: #EAEAEA;
+}
+
+.clocks-items {
+    position: relative;
+    border-radius: 0.5em;
+    overflow-y: scroll;
+}
+
+.clocks-items-title {
+    position: relative;
+    height: 100%;
+    text-align: center;
+    border-bottom: 2px #707070 solid;
+}
+
+.clocks-items-title p {
+    position: relative;
+    margin: 0;
+    font-size: 3vmin;
+    text-transform: uppercase;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #707070;
+}
+
+.status-items-container {
+    position: relative;
+}
+
+.status-header-container {
+    position: relative;
+    margin: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: center;
+    background-color: #bbbbbb;
+    border-radius: 0.5em;
+}
+
+.status-item {
+    position: relative;
+    width: 180px;
+    height: 140px;
+    background-color: #ffa100;
+    margin: 20px;
+    display: grid;
+    grid-template-rows: 30% 70%;
+    border-radius: 0.5em;
+    overflow: hidden;
+    text-align: center;
+}
+
+.status-item p {
+    margin: 0;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.status-item-header {
+    position: relative;
+    background-color: #CBC9C9;
+}
+
+.status-item-value {
+    background-color: #EAEAEA;
+    font-size: 40px;
+}
+
+.status-table-container {
+    position: relative;
+    /*background-color: #ffa100;*/
+    margin: 20px;
+    height: 100px;
+}
 @media screen and (max-width: 600px) {
     .dataMarkup {
         display: flex;
         flex-direction: column;
         /*flex-wrap: wrap;*/
+    }
+
+    .content-container {
+        position: relative;
+        display: grid;
+        grid-template-columns: unset;
+        height: 100vh;
+    }
+
+    .status-items-container {
+        display: none;
+    }
+
+    .clocks-items {
+        position: relative;
+        border-radius: 0.5em;
+        overflow-y: scroll;
+        height: 100vh;
+    }
+
+    .clocks-items-title {
+        display: none;
     }
 }

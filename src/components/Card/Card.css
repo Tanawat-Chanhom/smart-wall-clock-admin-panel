@@ -1,15 +1,9 @@
 .card {
-    display: flex;
-    margin: 0% 1% 1% 1%;
-    box-shadow: 3px 6px 10px 2px #9E9E9E99;
-    width: 48%;
-}
-
-.image {
     position: relative;
-    width: 50%;
+    display: grid;
+    grid-template-columns: 80% 20%;
     margin: 10px;
-    border-radius: 20px;
+    /*width: 100%;*/
 }
 
 .MuiPaper-rounded {
@@ -21,6 +15,7 @@
 }
 
 .container-content {
+    height: 100%;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -36,16 +31,22 @@
 }
 
 .container-information {
-    width: 80%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-rows: 20% 20% 20% 20% 20%;
     margin-right: 10px;
+    align-content: space-between;
+
+}
+
+.container-information span {
+    font-size: 1.5vmin;
 }
 
 @media screen and (max-width: 600px){
     .card {
-        width: 100%;
-        margin: 0% 0% 2% 0%;
+        /*width: 100%;*/
+        margin: 10px;
     }
 }
