@@ -38,7 +38,9 @@ class Paper extends Component {
             deleteItem: null,
             arrIndex: 0,
             alertStatus: null,
-            error: ''
+            error: '',
+            moveLeftCounter: 0,
+            moveRightCounter: 0,
         };
     }
 
@@ -88,6 +90,47 @@ class Paper extends Component {
             });
         this.dialogClose()
     };
+
+    resetFunction = () => {
+        const databaseRef = firebase.database().ref('/Clocks/'+this.state.firebaseId);
+        databaseRef.update({
+            'clockFunction': 1
+        })
+    }
+
+    moveLeft = () => {
+        const databaseRef = firebase.database().ref('/Clocks/'+this.state.firebaseId);
+        if (this.state.moveLeftCounter === 0 && this.state.moveRightCounter === 0) {
+            document.getElementById('moveLeft').style.backgroundColor = 'gray';
+            this.setState({'moveLeftCounter': 1});
+            databaseRef.update({
+                'clockFunction': 2
+            })
+        } else {
+            document.getElementById('moveLeft').style.backgroundColor = 'unset';
+            this.setState({'moveLeftCounter': 0});
+            databaseRef.update({
+                'clockFunction': 0
+            })
+        }
+    }
+
+    moveRight = () => {
+        const databaseRef = firebase.database().ref('/Clocks/'+this.state.firebaseId);
+        if (this.state.moveRightCounter === 0 && this.state.moveLeftCounter === 0) {
+            document.getElementById('moveRight').style.backgroundColor = 'gray';
+            this.setState({'moveRightCounter': 1});
+            databaseRef.update({
+                'clockFunction': 3
+            })
+        } else {
+            document.getElementById('moveRight').style.backgroundColor = 'unset';
+            this.setState({'moveRightCounter': 0});
+            databaseRef.update({
+                'clockFunction': 0
+            })
+        }
+    }
 
     componentDidMount() {
         const { data: { clockId, clockName, timeZone, clockBattery, roomTemperature, firebaseId }, arrIndex, deleteItem } = this.props;
@@ -160,7 +203,7 @@ class Paper extends Component {
                             <TextField margin="dense" id="clockName" name={"clockName"} label="Clock Name" type="text" defaultValue={this.state.clockName} onChange={this.handleChange} fullWidth/>
                             <TextField margin="dense" id="timeZone" name={"timeZone"} label="Time Zone" type="text" defaultValue={this.state.timeZone} onChange={this.handleChange} fullWidth/>
                             <Typography variant="H2" style={{color: "#707070",width: '100%'}}>Actions: </Typography>
-                            <IconButton color="secondary" aria-label="upload picture" component="span"  style={{borderRadius: "0.2em", padding: "10px", margin: '5px'}}>
+                            <IconButton color="secondary" aria-label="upload picture" component="span" onClick={this.moveLeft} id='moveLeft' style={{backgroundColor: 'unset' ,borderRadius: "0.2em", padding: "10px", margin: '5px'}}>
                                 <ArrowBackIcon/>
                             </IconButton>
                             <Button
@@ -178,10 +221,10 @@ class Paper extends Component {
                             >
                                 RUN
                             </Button>
-                            <IconButton color="secondary" aria-label="upload picture" component="span"  style={{borderRadius: "0.2em", padding: "10px", margin: '5px'}}>
+                            <IconButton color="secondary" aria-label="upload picture" component="span" onClick={this.moveRight} id='moveRight' style={{borderRadius: "0.2em", padding: "10px", margin: '5px'}}>
                                 <ArrowForwardIcon/>
                             </IconButton>
-                            <IconButton color="primary"  aria-label="upload picture" component="span"  style={{borderRadius: "0.2em", padding: "10px", margin: '5px'}}>
+                            <IconButton color="primary"  aria-label="upload picture" component="span" onClick={this.resetFunction} id='resetBTN'  style={{borderRadius: "0.2em", padding: "10px", margin: '5px'}}>
                                 <HistoryIcon/>
                             </IconButton>
                         </DialogContent>

@@ -125,7 +125,6 @@ class home extends Component {
                             </div>
                             <div className={'clocks-items'}>
                                 {dataMarkup}
-                                {dataMarkup}
                             </div>
                         </div>
                         <div className={'status-items-container'}>
