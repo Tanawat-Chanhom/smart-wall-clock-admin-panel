@@ -1,4 +1,4 @@
-# SWC Anmin Panal
+# SWC Admin Panal
 *Web Application for Smart wall clack[IOT]*
 
 ## Fetures
@@ -9,7 +9,7 @@
 * Controller clock
 * Logout
 
-## How to setup to use
+## How to setup & use
 * Clone this project
 * Go to folder by terminal or CMD
 * key ==> npm install
