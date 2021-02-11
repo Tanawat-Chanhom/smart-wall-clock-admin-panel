@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@sendgrid/mail": "^6.4.0",
-    "apexcharts": "^3.8.4",
+    "apexcharts": "^3.24.0",
     "cors": "^2.8.5",
     "custom-env": "^1.0.2",
     "dayjs": "^1.8.15",
